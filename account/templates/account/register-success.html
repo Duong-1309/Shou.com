@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>register account success</title>
+</head>
+<body>
+    <div class="col">
+        <h2 style="color:#0fad00">Shou</h2>
+        <div class="card mb-3 mt-3">
+            <p>Đã tạo tài khoản thành công</p>
+            <div class="card-body">
+                <h3 class="card-text">Cảm ơn bạn {{ username }}!</h3>
+                <p class="card-text" style="font-size:20px;color:#5C5C5C;">
+                    Bạn đã đăng ký tài khoản thành công!
+                </p>
+                <p class="card-text">Bạn chỉ cần check mail để kích hoạt tài khoản thôi</p>
+                <a class="text-white" href="{% url 'account:login' %}">
+                    <button class="btn-sm btn-primary">Đăng nhập ngay
+                    <i class="fa fa-sign-in" aria-hidden="true"></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -48,11 +48,9 @@ urlpatterns = [
         name='password_reset_complete',
     ),
     path('', include('main.urls')),
+    path('account/', include('account.urls')),
 
-    path('docs/', include_docs_urls(title='Shou.com API', description='Sumary API used in the hspaces.net project',
-                                    permission_classes=[IsAdminUser]
-                                    )),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    url(r'^docs/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

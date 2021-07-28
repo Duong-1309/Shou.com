@@ -54,7 +54,7 @@ class User(AbstractUser):
         if self.url is None:
             self.url = slugify(self.username) + '-' + str(abs(hash(datetime.now())))
         self.last_modified = now()
-        return super(User, self).save()
+        return super(User, self).save(*args, **kwargs)
 
         def get_picture_url(self, width=50, height=50):
             return self.picture.build_url(secure=True, transformation=[

@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')rsyuj-v@rbsp8iwmxvqe5!rv^9@efu53d!6@))(ay530%!zzh'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,16 +45,19 @@ INSTALLED_APPS = [
 
     'cloudinary',
 
+    'channels',
     'drf_yasg',
     'corsheaders',
     'easy_select2',
     'ckeditor',
     'main.apps.MainConfig',
     'account.apps.AccountConfig',
+    'chat'
 ]
 
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # cors middleware
@@ -85,20 +88,29 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'shou.asgi.application'
 WSGI_APPLICATION = 'shou.wsgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shou',
-        'USER': 'shou',
-        'PASSWORD': 'shou@2021',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
 
@@ -153,6 +165,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles')
 ]
 
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 #user admin
@@ -178,13 +191,13 @@ REST_FRAMEWORK ={
 
 # Media file cloud storage
 CLOUDINARY = {
-    'cloud_name': 'dap9v0d3d',
-    'api_key': '888525415412474',
-    'api_secret': 'lNINJwSd2D_53k8ePBjMAoUWhIc',
+    'cloud_name': os.getenv('CLOUDINARY_NAME'),
+    'api_key': os.getenv('CLOUDINARY_KEY'),
+    'api_secret': os.getenv('CLOUDINARY_SECRET'),
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=480),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -207,6 +220,19 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=480),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+EMAIL_BACKEND = os.getenv('EMAIL_CORE')
+EMAIL_USE_TLS = True if os.getenv('EMAIL_USE_TLS') == 'True' else False
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
+DEFAULT_FROM_EMAIL = os.getenv('MAIL_DEFAULT')
+
+import dj_database_url 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db) 
